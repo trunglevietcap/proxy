@@ -11,6 +11,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 app.use("/api", async (req, res) => {
   const targetUrl = TARGET + req.originalUrl;
+  console.log('targetUrl', targetUrl)
   try {
     const fetchResponse = await fetch(targetUrl, {
       method: req.method,
