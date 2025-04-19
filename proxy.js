@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const TARGET = "https://trading-qc.vietcap.int";
+const TARGET = "https://trading.vietcap.com.vn";
 
 app.use(cors());
 app.use(express.json());
