@@ -5,13 +5,16 @@
   "main": "proxy.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_OPTIONS='--no-warnings' node proxy.js"
+    "start": "NODE_OPTIONS='--no-warnings' node proxy.js",
+    "dev": "cross-env MODE=dev NODE_OPTIONS='--no-warnings' nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "cross-env": "^7.0.3",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.9"
   }
 }

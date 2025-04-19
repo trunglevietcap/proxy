@@ -9,7 +9,7 @@ app.use(express.json());
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-app.use("/api", async (req, res) => {
+app.use("/", async (req, res) => {
   const targetUrl = TARGET + req.originalUrl;
   console.log('targetUrl', targetUrl)
   try {
@@ -38,7 +38,7 @@ app.use("/api", async (req, res) => {
   }
 });
 
-const PORT = 6000;
+const PORT = 4001;
 app.listen(PORT, () => {
   console.log(`✅ Proxy server chạy tại http://localhost:${PORT} → ${TARGET}`);
 });
