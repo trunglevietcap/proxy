@@ -19,7 +19,10 @@ const DOMAINS = Object.values(DOMAINS_TYPE);
 app.use(cors());
 app.use(express.json());
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+const isModeDev = process.env.MODE === "dev";
+if (isModeDev) {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 DOMAINS.forEach((domain) => {
   app.use(domain, async (req, res) => {
     const target = TARGETS[domain];
