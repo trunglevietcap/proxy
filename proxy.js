@@ -6,12 +6,16 @@ const app = express();
 const DOMAINS_TYPE = {
   TRADING: "/trading/",
   MT: "/mt/",
-  WWW_QC: "/www-qc/"
+  WWW_QC: "/www-qc/",
+  IQ: "/iq/",
+  AI: "/ai/"
 };
 const TARGETS = {
   [DOMAINS_TYPE.TRADING]: "https://trading-qc.vietcap.int",
   [DOMAINS_TYPE.MT]: "https://mt-qc.vietcap.int",
   [DOMAINS_TYPE.WWW_QC]: "https://www-qc.vietcap.int",
+  [DOMAINS_TYPE.IQ]: "https://iq-qc.vietcap.int",
+  [DOMAINS_TYPE.AI]: "https://ai-qc.vietcap.int",
 };
 
 const DOMAINS = Object.values(DOMAINS_TYPE);
