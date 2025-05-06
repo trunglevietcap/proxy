@@ -8,15 +8,28 @@ const DOMAINS_TYPE = {
   MT: "/mt/",
   WWW_QC: "/www-qc/",
   IQ: "/iq/",
-  AI: "/ai/"
+  AI: "/ai/",
 };
-const TARGETS = {
+
+const KRX_INTEGRATION = {
+  [DOMAINS_TYPE.TRADING]: "https://trading-krx.vietcap.int",
+  [DOMAINS_TYPE.MT]: "https://trading-krx.vietcap.int",
+  [DOMAINS_TYPE.WWW_QC]: "https://www-qc.vietcap.int",
+  [DOMAINS_TYPE.IQ]: "https://trading-krx.vietcap.int",
+  [DOMAINS_TYPE.AI]: "https://trading-krx.vietcap.int",
+};
+
+const QC = {
   [DOMAINS_TYPE.TRADING]: "https://trading-qc.vietcap.int",
   [DOMAINS_TYPE.MT]: "https://mt-qc.vietcap.int",
   [DOMAINS_TYPE.WWW_QC]: "https://www-qc.vietcap.int",
   [DOMAINS_TYPE.IQ]: "https://iq-qc.vietcap.int",
   [DOMAINS_TYPE.AI]: "https://ai-qc.vietcap.int",
 };
+
+
+
+const TARGETS = KRX_INTEGRATION
 
 const DOMAINS = Object.values(DOMAINS_TYPE);
 
