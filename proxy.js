@@ -3,11 +3,13 @@ import cors from "cors";
 import { onValue } from "firebase/database";
 import { proxyConfigRef } from "./firebase/firebase-config.js";
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+
 export const EMPTY_TYPE = {
   EMPTY_ARRAY: "EMPTY_ARRAY",
 };
-
-const app = express();
 
 const DOMAINS_TYPE = {
   TRADING: "/trading/",
@@ -72,11 +74,6 @@ function getTargetUrl() {
   }
 }
 
-const DOMAINS = Object.values(DOMAINS_TYPE);
-
-app.use(cors());
-app.use(express.json());
-
 const isModeDev = process.env.MODE === "dev";
 if (isModeDev) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -104,11 +101,13 @@ function proxyApi(targetUrl, res, data) {
   }
 }
 
+const DOMAINS = Object.values(DOMAINS_TYPE);
 DOMAINS.forEach((domain) => {
   app.use(domain, async (req, res) => {
     const targets = getTargetUrl();
     const target = targets[domain];
-    const targetUrl = (target + req.originalUrl).replace(domain, "/");
+    const originalUrl = req.originalUrl.replace(domain, "/");
+    const targetUrl = target + originalUrl
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
@@ -116,7 +115,7 @@ DOMAINS.forEach((domain) => {
 
       if (contentType && contentType.includes("application/json")) {
         const data = await fetchResponse.json();
-        proxyApi(targetUrl, res, data);
+        proxyApi(originalUrl.replace(domain, "/"), res, data);
       } else {
         const text = await fetchResponse.text();
         res.send(text);
