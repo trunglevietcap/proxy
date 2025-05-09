@@ -41,15 +41,14 @@ const PRO = {
   [DOMAINS_TYPE.AI]: "https://ai.vietcap.int",
 };
 
-let fakeDataResponse = [
-  // {
-  //   targetUrl: "https://trading.vietcap.com.vn/api/chart/OHLCChart/gap",
-  //   data: [],
-  // },
-];
+let fakeDataResponse = [];
+let ENV = "QC";
 
 onValue(proxyConfigRef, (snapshot) => {
   const proxyConfig = snapshot.val();
+  if (proxyConfig.ENV) {
+    ENV = proxyConfig.ENV;
+  }
   if (!proxyConfig.enableFakeData) {
     fakeDataResponse = [];
   } else {
@@ -60,7 +59,18 @@ onValue(proxyConfigRef, (snapshot) => {
   }
 });
 
-const TARGETS = PRO;
+function getTargetUrl() {
+  switch (ENV) {
+    case "QC":
+      return QC;
+    case "PRODUCTION":
+      return PRO;
+    case "KRX_INTEGRATION":
+      return KRX_INTEGRATION;
+    default:
+      return QC;
+  }
+}
 
 const DOMAINS = Object.values(DOMAINS_TYPE);
 
@@ -96,7 +106,8 @@ function proxyApi(targetUrl, res, data) {
 
 DOMAINS.forEach((domain) => {
   app.use(domain, async (req, res) => {
-    const target = TARGETS[domain];
+    const targets = getTargetUrl();
+    const target = targets[domain];
     const targetUrl = (target + req.originalUrl).replace(domain, "/");
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
