@@ -6,15 +6,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_OPTIONS='--no-warnings' node proxy.js",
-    "dev": "cross-env MODE=dev NODE_OPTIONS='--no-warnings' nodemon index.js"
+    "dev": "cross-env MODE=dev NODE_OPTIONS='--no-warnings' nodemon index.js",
+    "update-firebase": "node firebase/update-firebase.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "firebase": "^11.6.0"
   }
 }
