@@ -1,0 +1,42 @@
+{
+    "HSX": {
+        "marketCode": "HSX",
+        "status": "CLOSED",
+        "receivedTime": "2025-05-09T08:04:50.548Z",
+        "sendingTime": "20250509 08:05:00.529",
+        "messageType": "f",
+        "isInPLOEstMatchVolSession": false
+    },
+    "UPCOM": {
+        "marketCode": "UPCOM",
+        "status": "CLOSED",
+        "receivedTime": "2025-05-09T08:04:50.676Z",
+        "sendingTime": "20250509 08:05:00.657",
+        "messageType": "f",
+        "isInPLOEstMatchVolSession": false
+    },
+    "HNX": {
+        "marketCode": "HNX",
+        "status": "CLOSED",
+        "receivedTime": "2025-05-09T08:04:50.639Z",
+        "sendingTime": "20250509 08:05:00.621",
+        "messageType": "f",
+        "isInPLOEstMatchVolSession": false
+    },
+    "BOND": {
+        "marketCode": "HNX",
+        "status": "CLOSED",
+        "receivedTime": "2025-05-09T08:04:50.639Z",
+        "sendingTime": "20250509 08:05:00.621",
+        "messageType": "f",
+        "isInPLOEstMatchVolSession": false
+    },
+    "DERIVATIVES": {
+        "marketCode": "DERIVATIVES",
+        "status": "CLOSED",
+        "receivedTime": "2025-05-09T08:04:50.664Z",
+        "sendingTime": "20250509 08:05:00.646",
+        "messageType": "f",
+        "isInPLOEstMatchVolSession": false
+    }
+}

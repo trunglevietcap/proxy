@@ -48,16 +48,18 @@ let ENV = "QC";
 
 onValue(proxyConfigRef, (snapshot) => {
   const proxyConfig = snapshot.val();
-  if (proxyConfig.ENV) {
-    ENV = proxyConfig.ENV;
-  }
-  if (!proxyConfig.enableFakeData) {
-    fakeDataResponse = [];
-  } else {
-    fakeDataResponse = proxyConfig.fakeData?.map?.((item) => ({
-      ...item,
-      data: item.data === EMPTY_TYPE.EMPTY_ARRAY ? [] : item.data,
-    }));
+  if (proxyConfig) {
+    if (proxyConfig?.ENV) {
+      ENV = proxyConfig.ENV || "QC";
+    }
+    if (!proxyConfig.enableFakeData) {
+      fakeDataResponse = [];
+    } else {
+      fakeDataResponse = proxyConfig.fakeData?.map?.((item) => ({
+        ...item,
+        data: item.data === EMPTY_TYPE.EMPTY_ARRAY ? [] : item.data,
+      }));
+    }
   }
 });
 
@@ -93,7 +95,9 @@ async function fetchData(req, target, targetUrl) {
 }
 
 function proxyApi(targetUrl, res, data) {
-  const fakeData = fakeDataResponse.find((item) => item.url === targetUrl);
+  const fakeData = fakeDataResponse.find(
+    (item) => item.url === targetUrl && item?.enable
+  );
   if (fakeData) {
     res.json(fakeData.data);
   } else {
@@ -107,7 +111,7 @@ DOMAINS.forEach((domain) => {
     const targets = getTargetUrl();
     const target = targets[domain];
     const originalUrl = req.originalUrl.replace(domain, "/");
-    const targetUrl = target + originalUrl
+    const targetUrl = target + originalUrl;
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
