@@ -130,7 +130,7 @@ DOMAINS.forEach((domain) => {
     }
   });
 });
-const PORT = 4001;
-app.listen(PORT, () => {
+const PORT = process?.env?.PORT || 4001;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Proxy server chạy tại http://localhost:${PORT}`);
 });
