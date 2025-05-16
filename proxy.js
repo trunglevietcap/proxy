@@ -112,6 +112,7 @@ DOMAINS.forEach((domain) => {
     const target = targets[domain];
     const originalUrl = req.originalUrl.replace(domain, "/");
     const targetUrl = target + originalUrl;
+    console.log("targetUrl:", targetUrl);
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
