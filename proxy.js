@@ -112,7 +112,8 @@ DOMAINS.forEach((domain) => {
     const target = targets[domain];
     const originalUrl = req.originalUrl.replace(domain, "/");
     const targetUrl = target + originalUrl;
-    console.log("targetUrl:", targetUrl);
+
+    console.log('targetUrl:', targetUrl )
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
@@ -130,7 +131,7 @@ DOMAINS.forEach((domain) => {
     }
   });
 });
-const PORT = process?.env?.PORT || 4001;
-app.listen(PORT, '0.0.0.0', () => {
+const PORT = 4001;
+app.listen(PORT, () => {
   console.log(`✅ Proxy server chạy tại http://localhost:${PORT}`);
 });
