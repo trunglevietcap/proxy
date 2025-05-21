@@ -17,6 +17,7 @@ const DOMAINS_TYPE = {
   WWW_QC: "/www-qc/",
   IQ: "/iq/",
   AI: "/ai/",
+  LOG: "/log/",
 };
 
 const KRX_INTEGRATION = {
@@ -25,6 +26,7 @@ const KRX_INTEGRATION = {
   [DOMAINS_TYPE.WWW_QC]: "https://www-qc.vietcap.int",
   [DOMAINS_TYPE.IQ]: "https://trading-krx.vietcap.int",
   [DOMAINS_TYPE.AI]: "https://trading-krx.vietcap.int",
+  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn/logs",
 };
 
 const QC = {
@@ -33,6 +35,7 @@ const QC = {
   [DOMAINS_TYPE.WWW_QC]: "https://www-qc.vietcap.int",
   [DOMAINS_TYPE.IQ]: "https://iq-qc.vietcap.int",
   [DOMAINS_TYPE.AI]: "https://ai-qc.vietcap.int",
+  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn/logs",
 };
 
 const PRO = {
@@ -41,6 +44,7 @@ const PRO = {
   [DOMAINS_TYPE.WWW_QC]: "https://www.vietcap.com.vn",
   [DOMAINS_TYPE.IQ]: "https://iq.vietcap.com.vn",
   [DOMAINS_TYPE.AI]: "https://ai.vietcap.int",
+  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn/logs",
 };
 
 let fakeDataResponse = [];
@@ -94,10 +98,18 @@ async function fetchData(req, target, targetUrl) {
   });
 }
 
-function proxyApi(targetUrl, res, data) {
+function timeDelay(delayInms) {
+  return new Promise((resolve) => setTimeout(resolve, delayInms));
+}
+async function proxyApi(targetUrl, res, data) {
   const fakeData = fakeDataResponse.find(
     (item) => item.url === targetUrl && item?.enable
   );
+
+  if (fakeData?.delay) {
+    await timeDelay(fakeData?.delay);
+  }
+
   if (fakeData) {
     res.json(fakeData.data);
   } else {
@@ -113,7 +125,7 @@ DOMAINS.forEach((domain) => {
     const originalUrl = req.originalUrl.replace(domain, "/");
     const targetUrl = target + originalUrl;
 
-    console.log('targetUrl:', targetUrl )
+    console.log("targetUrl:", targetUrl);
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
