@@ -26,7 +26,7 @@ const KRX_INTEGRATION = {
   [DOMAINS_TYPE.WWW_QC]: "https://www-qc.vietcap.int",
   [DOMAINS_TYPE.IQ]: "https://trading-krx.vietcap.int",
   [DOMAINS_TYPE.AI]: "https://trading-krx.vietcap.int",
-  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn/logs",
+  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn",
 };
 
 const QC = {
@@ -35,7 +35,7 @@ const QC = {
   [DOMAINS_TYPE.WWW_QC]: "https://www-qc.vietcap.int",
   [DOMAINS_TYPE.IQ]: "https://iq-qc.vietcap.int",
   [DOMAINS_TYPE.AI]: "https://ai-qc.vietcap.int",
-  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn/logs",
+  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn",
 };
 
 const PRO = {
@@ -44,7 +44,7 @@ const PRO = {
   [DOMAINS_TYPE.WWW_QC]: "https://www.vietcap.com.vn",
   [DOMAINS_TYPE.IQ]: "https://iq.vietcap.com.vn",
   [DOMAINS_TYPE.AI]: "https://ai.vietcap.int",
-  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn/logs",
+  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn",
 };
 
 let fakeDataResponse = [];
