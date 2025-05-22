@@ -44,7 +44,7 @@ const PRO = {
   [DOMAINS_TYPE.WWW_QC]: "https://www.vietcap.com.vn",
   [DOMAINS_TYPE.IQ]: "https://iq.vietcap.com.vn",
   [DOMAINS_TYPE.AI]: "https://ai.vietcap.int",
-  [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn",
+  [DOMAINS_TYPE.LOG]: "https://ncore.vcsc.vn",
 };
 
 let fakeDataResponse = [];
