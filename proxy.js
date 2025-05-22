@@ -111,7 +111,12 @@ async function proxyApi(targetUrl, res, data) {
   }
 
   if (fakeData) {
-    res.json(fakeData.data);
+    if (fakeData.dataStringify) {
+      const dataObj = JSON.parse(fakeData.dataStringify);
+      res.json(dataObj);
+    } else {
+      res.json(fakeData.data);
+    }
   } else {
     res.json(data);
   }
@@ -125,7 +130,7 @@ DOMAINS.forEach((domain) => {
     const originalUrl = req.originalUrl.replace(domain, "/");
     const targetUrl = target + originalUrl;
 
-    console.log("targetUrl:", targetUrl);
+    // console.log("targetUrl:", targetUrl);
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
