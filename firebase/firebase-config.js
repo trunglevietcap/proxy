@@ -27,3 +27,11 @@ export { db };
 
 export const proxyConfigRef = ref(db, FIREBASE_DB_NAME.PROXY_CONFIG);
 export const orderBookRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
+export const saveFirebaseData = async (dataBase, data) => {
+  try {
+    await set(dataBase, data);
+    console.log("proxyFakeDataRef saved");
+  } catch (error) {
+    console.error("Error saving data to Firebase:", error);
+  }
+};

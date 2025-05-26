@@ -1,9 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { onValue } from "firebase/database";
-import { proxyConfigRef, orderBookRef } from "./firebase/firebase-config.js";
-import { saveFirebaseData } from "./firebase/update-firebase.js";
-import { URL } from "./url.js";
+import { proxyConfigRef, orderBookRef, saveFirebaseData } from "./firebase/firebase-config.js";
 
 const app = express();
 app.use(cors());
@@ -104,6 +102,7 @@ function timeDelay(delayInms) {
   return new Promise((resolve) => setTimeout(resolve, delayInms));
 }
 async function proxyApi(targetUrl, res, data) {
+  let result = data
   const fakeData = fakeDataResponse.find(
     (item) => item.url === targetUrl && item?.enable
   );
@@ -115,15 +114,14 @@ async function proxyApi(targetUrl, res, data) {
   if (fakeData) {
     if (fakeData.dataStringify) {
       const dataObj = JSON.parse(fakeData.dataStringify);
-      data = dataObj;
+      result = dataObj
     } else {
-      data = fakeData.data;
+      result = fakeData.data
     }
   }
   res.json(data);
-  simulatorSocket(targetUrl, data);
+  simulatorSocket(data)
 }
-
 function simulatorSocket(targetUrl, res) {
   switch (targetUrl) {
     case URL.ORDER_BOOK:
@@ -137,7 +135,6 @@ function simulatorSocket(targetUrl, res) {
       break;
   }
 }
-
 const DOMAINS = Object.values(DOMAINS_TYPE);
 DOMAINS.forEach((domain) => {
   app.use(domain, async (req, res) => {
