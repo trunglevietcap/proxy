@@ -1,7 +1,8 @@
 import { set } from "firebase/database";
 import { proxyConfigRef } from "./firebase-config.js";
-import { EMPTY_TYPE } from "./../proxy.js";
-
+export const EMPTY_TYPE = {
+  EMPTY_ARRAY: "EMPTY_ARRAY",
+};
 export const saveFirebaseData = async (dataBase, data) => {
   try {
     await set(dataBase, data);
