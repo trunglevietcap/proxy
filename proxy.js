@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { onValue } from "firebase/database";
-import { proxyConfigRef } from "./firebase/firebase-config.js";
+import { proxyConfigRef, orderBookRef } from "./firebase/firebase-config.js";
+import { saveFirebaseData } from "./firebase/update-firebase.js";
+import { URL } from "./url.js";
 
 const app = express();
 app.use(cors());
@@ -113,12 +115,26 @@ async function proxyApi(targetUrl, res, data) {
   if (fakeData) {
     if (fakeData.dataStringify) {
       const dataObj = JSON.parse(fakeData.dataStringify);
-      res.json(dataObj);
+      data = dataObj;
     } else {
-      res.json(fakeData.data);
+      data = fakeData.data;
     }
-  } else {
-    res.json(data);
+  }
+  res.json(data);
+  simulatorSocket(targetUrl, data);
+}
+
+function simulatorSocket(targetUrl, res) {
+  switch (targetUrl) {
+    case URL.ORDER_BOOK:
+      saveFirebaseData(orderBookRef, {
+        data: res?.data,
+        code: 'c',
+        id: res?.data?.id
+      });
+      break;
+    default:
+      break;
   }
 }
 

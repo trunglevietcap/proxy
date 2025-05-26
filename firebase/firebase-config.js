@@ -5,6 +5,8 @@ import { ref } from "firebase/database";
 
 export const FIREBASE_DB_NAME = {
   PROXY_CONFIG: "PROXY_CONFIG",
+  ORDER_BOOK: "ORDER_BOOK",
+  ORDER_BOOK_DERIVATIVE: "ORDER_BOOK_DERIVATIVE",
 };
 
 const firebaseConfig = {
@@ -24,3 +26,4 @@ const db = getDatabase(app);
 export { db };
 
 export const proxyConfigRef = ref(db, FIREBASE_DB_NAME.PROXY_CONFIG);
+export const orderBookRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
