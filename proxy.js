@@ -119,8 +119,8 @@ async function proxyApi(targetUrl, res, data) {
       result = fakeData.data
     }
   }
-  res.json(data);
-  simulatorSocket(data)
+  res.json(result);
+  simulatorSocket(result)
 }
 function simulatorSocket(targetUrl, res) {
   switch (targetUrl) {
