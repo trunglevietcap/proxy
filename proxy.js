@@ -43,7 +43,7 @@ const PRO = {
   [DOMAINS_TYPE.MT]: "https://trading.vietcap.com.vn",
   [DOMAINS_TYPE.WWW_QC]: "https://www.vietcap.com.vn",
   [DOMAINS_TYPE.IQ]: "https://iq.vietcap.com.vn",
-  [DOMAINS_TYPE.AI]: "https://ai.vietcap.int",
+  [DOMAINS_TYPE.AI]: "https://ai.vietcap.com.vn",
   [DOMAINS_TYPE.LOG]: "https://ncore.vcsc.vn",
 };
 
@@ -143,7 +143,7 @@ DOMAINS.forEach((domain) => {
     const originalUrl = req.originalUrl.replace(domain, "/");
     const targetUrl = target + originalUrl;
 
-    // console.log("targetUrl:", targetUrl);
+    console.log("targetUrl:", targetUrl);
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
