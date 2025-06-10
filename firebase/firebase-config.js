@@ -1,12 +1,12 @@
 // firebase-config.js
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
-import { ref } from "firebase/database";
+import { ref, set } from "firebase/database";
 
 export const FIREBASE_DB_NAME = {
   PROXY_CONFIG: "PROXY_CONFIG",
   ORDER_BOOK: "ORDER_BOOK",
-  ORDER_BOOK_DERIVATIVE: "ORDER_BOOK_DERIVATIVE",
+  DERIVATIVE_ORDER_BOOK: "DERIVATIVE_ORDER_BOOK",
 };
 
 const firebaseConfig = {
@@ -26,7 +26,8 @@ const db = getDatabase(app);
 export { db };
 
 export const proxyConfigRef = ref(db, FIREBASE_DB_NAME.PROXY_CONFIG);
-export const orderBookRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
+export const orderRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
+export const derivativeOrderRef = ref(db, FIREBASE_DB_NAME.DERIVATIVE_ORDER_BOOK);
 export const saveFirebaseData = async (dataBase, data) => {
   try {
     await set(dataBase, data);

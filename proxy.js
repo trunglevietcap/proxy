@@ -1,7 +1,13 @@
 import express from "express";
 import cors from "cors";
 import { onValue } from "firebase/database";
-import { proxyConfigRef, orderBookRef, saveFirebaseData } from "./firebase/firebase-config.js";
+import {
+  proxyConfigRef,
+  derivativeOrderRef,
+  orderRef,
+  saveFirebaseData,
+} from "./firebase/firebase-config.js";
+import { PATH_URL } from "./url.js";
 
 const app = express();
 app.use(cors());
@@ -102,7 +108,7 @@ function timeDelay(delayInms) {
   return new Promise((resolve) => setTimeout(resolve, delayInms));
 }
 async function proxyApi(targetUrl, res, data) {
-  let result = data
+  let result = data;
   const fakeData = fakeDataResponse.find(
     (item) => item.url === targetUrl && item?.enable
   );
@@ -114,21 +120,30 @@ async function proxyApi(targetUrl, res, data) {
   if (fakeData) {
     if (fakeData.dataStringify) {
       const dataObj = JSON.parse(fakeData.dataStringify);
-      result = dataObj
+      result = dataObj;
     } else {
-      result = fakeData.data
+      result = fakeData.data;
     }
   }
   res.json(result);
-  simulatorSocket(result)
+  simulatorSocket(targetUrl, result);
 }
 function simulatorSocket(targetUrl, res) {
-  switch (targetUrl) {
-    case URL.ORDER_BOOK:
-      saveFirebaseData(orderBookRef, {
+  const targetUrlMain = targetUrl?.split?.('?')?.[0]
+  console.log(targetUrlMain)
+  switch (targetUrlMain) {
+    case PATH_URL.DERIVATIVE_ORDER:
+      saveFirebaseData(derivativeOrderRef, {
         data: res?.data,
-        code: 'c',
-        id: res?.data?.id
+        code: "c",
+        id: res?.data?.id,
+      });
+      break;
+    case PATH_URL.ORDER:
+      saveFirebaseData(orderRef, {
+        data: res?.data,
+        code: "c",
+        id: res?.data?.id,
       });
       break;
     default:
@@ -142,8 +157,6 @@ DOMAINS.forEach((domain) => {
     const target = targets[domain];
     const originalUrl = req.originalUrl.replace(domain, "/");
     const targetUrl = target + originalUrl;
-
-    console.log("targetUrl:", targetUrl);
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
