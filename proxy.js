@@ -8,6 +8,9 @@ import {
   saveFirebaseData,
 } from "./firebase/firebase-config.js";
 import { PATH_URL } from "./url.js";
+import http from "http";
+import httpProxy from "http-proxy";
+const { createProxyServer } = httpProxy;
 
 const app = express();
 app.use(cors());
@@ -24,6 +27,7 @@ const DOMAINS_TYPE = {
   IQ: "/iq/",
   AI: "/ai/",
   LOG: "/log/",
+  SOCKET: "/socket/",
 };
 
 const KRX_INTEGRATION = {
@@ -33,6 +37,7 @@ const KRX_INTEGRATION = {
   [DOMAINS_TYPE.IQ]: "https://trading-krx.vietcap.int",
   [DOMAINS_TYPE.AI]: "https://trading-krx.vietcap.int",
   [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn",
+  [DOMAINS_TYPE.SOCKET]: "wss://trading-qc.vietcap.int",
 };
 
 const QC = {
@@ -42,6 +47,7 @@ const QC = {
   [DOMAINS_TYPE.IQ]: "https://iq-qc.vietcap.int",
   [DOMAINS_TYPE.AI]: "https://ai-qc.vietcap.int",
   [DOMAINS_TYPE.LOG]: "https://ncore-qc.vcsc.vn",
+  [DOMAINS_TYPE.SOCKET]: "wss://trading-qc.vietcap.int",
 };
 
 const PRO = {
@@ -51,13 +57,18 @@ const PRO = {
   [DOMAINS_TYPE.IQ]: "https://iq.vietcap.com.vn",
   [DOMAINS_TYPE.AI]: "https://ai.vietcap.com.vn",
   [DOMAINS_TYPE.LOG]: "https://ncore.vcsc.vn",
+  [DOMAINS_TYPE.SOCKET]: "wss://trading-qc.vietcap.int",
 };
 
 let fakeDataResponse = [];
 let ENV = "QC";
+let targetSocket = "wss://trading-qc.vietcap.int";
 
 onValue(proxyConfigRef, (snapshot) => {
   const proxyConfig = snapshot.val();
+  if (proxyConfig) {
+    targetSocket = proxyConfig.baseSocket;
+  }
   if (proxyConfig) {
     if (proxyConfig?.ENV) {
       ENV = proxyConfig.ENV || "QC";
@@ -107,6 +118,7 @@ async function fetchData(req, target, targetUrl) {
 function timeDelay(delayInms) {
   return new Promise((resolve) => setTimeout(resolve, delayInms));
 }
+
 async function proxyApi(targetUrl, res, data) {
   let result = data;
   const fakeData = fakeDataResponse.find(
@@ -128,9 +140,9 @@ async function proxyApi(targetUrl, res, data) {
   res.json(result);
   simulatorSocket(targetUrl, result);
 }
+
 function simulatorSocket(targetUrl, res) {
-  const targetUrlMain = targetUrl?.split?.('?')?.[0]
-  console.log(targetUrlMain)
+  const targetUrlMain = targetUrl?.split?.("?")?.[0];
   switch (targetUrlMain) {
     case PATH_URL.DERIVATIVE_ORDER:
       saveFirebaseData(derivativeOrderRef, {
@@ -150,6 +162,7 @@ function simulatorSocket(targetUrl, res) {
       break;
   }
 }
+
 const DOMAINS = Object.values(DOMAINS_TYPE);
 DOMAINS.forEach((domain) => {
   app.use(domain, async (req, res) => {
@@ -157,6 +170,8 @@ DOMAINS.forEach((domain) => {
     const target = targets[domain];
     const originalUrl = req.originalUrl.replace(domain, "/");
     const targetUrl = target + originalUrl;
+    console.log("🔁 Proxy:", originalUrl);
+
     try {
       const fetchResponse = await fetchData(req, target, targetUrl);
       const contentType = fetchResponse.headers.get("content-type");
@@ -170,11 +185,39 @@ DOMAINS.forEach((domain) => {
         res.send(text);
       }
     } catch (err) {
+      console.error("❌ Proxy error:", err.message);
       res.status(500).send("Proxy error");
     }
   });
 });
+
+// 🔌 Tạo server HTTP chung với Express (để thêm WebSocket proxy)
+const server = http.createServer(app);
+
+// 🔁 Proxy WebSocket
+const wsProxy = createProxyServer({
+  target: QC[DOMAINS_TYPE.SOCKET],
+  changeOrigin: true,
+  ws: true,
+  secure: false,
+});
+
+server.on("upgrade", (req, socket, head) => {
+  const fullWsUrl = `ws://${req.headers.host}${req.url}`;
+  const targetWsUrl = getTargetUrl()[DOMAINS_TYPE.SOCKET];
+
+  console.log("🔌 Proxy websocket to:", targetWsUrl);
+
+  // Bắt lỗi để không làm sập server
+  socket.on("error", (err) => {
+    console.error("❌ Socket error (before proxy):", err.message);
+  });
+
+  wsProxy.ws(req, socket, head, { target: targetWsUrl });
+});
+
+// 🚀 Start server
 const PORT = 4001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`✅ Proxy server chạy tại http://localhost:${PORT}`);
 });
