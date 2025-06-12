@@ -144,11 +144,13 @@ function simulatorSocket(targetUrl, res) {
   const targetUrlMain = targetUrl?.split?.("?")?.[0];
   switch (targetUrlMain) {
     case PATH_URL.DERIVATIVE_ORDER:
-      saveFirebaseData(derivativeOrderRef, {
-        data: res?.data,
-        code: "c",
-        id: res?.data?.id,
-      });
+      if(res.successful) {
+        saveFirebaseData(derivativeOrderRef, {
+          data: res?.data,
+          code: "c",
+          id: res?.data?.id,
+        });
+      }
       break;
     case PATH_URL.ORDER:
       saveFirebaseData(orderRef, {
