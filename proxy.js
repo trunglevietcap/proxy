@@ -62,13 +62,12 @@ const PRO = {
 
 let fakeDataResponse = [];
 let ENV = "QC";
-let targetSocket = "wss://trading-qc.vietcap.int";
+let socketConfig = null;
 
 onValue(proxyConfigRef, (snapshot) => {
   const proxyConfig = snapshot.val();
-  if (proxyConfig) {
-    targetSocket = proxyConfig.baseSocket;
-  }
+
+  socketConfig = proxyConfig?.socket;
   if (proxyConfig) {
     if (proxyConfig?.ENV) {
       ENV = proxyConfig.ENV || "QC";
@@ -203,10 +202,13 @@ const wsProxy = createProxyServer({
 });
 
 server.on("upgrade", (req, socket, head) => {
-  const fullWsUrl = `ws://${req.headers.host}${req.url}`;
-  const targetWsUrl = getTargetUrl()[DOMAINS_TYPE.SOCKET];
+  let targetWsUrl = getTargetUrl()[DOMAINS_TYPE.SOCKET];
 
-  console.log("🔌 Proxy websocket to:", targetWsUrl);
+  if (socketConfig?.connectSocketSimulator) {
+    targetWsUrl = socketConfig?.isLocal
+      ? "http://localhost:8080"
+      : "https://socket-simulator.onrender.com";
+  }
 
   // Bắt lỗi để không làm sập server
   socket.on("error", (err) => {
